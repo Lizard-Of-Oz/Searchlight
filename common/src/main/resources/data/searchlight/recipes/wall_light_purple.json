@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "wool",
+  "ingredients": [
+    {
+      "item": "minecraft:purple_dye"
+    },
+    {
+      "item": "searchlight:wall_light_iron"
+    }
+  ],
+  "result": {
+    "item": "searchlight:wall_light_purple"
+  }
+}

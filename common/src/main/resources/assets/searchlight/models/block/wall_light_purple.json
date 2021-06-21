@@ -1,0 +1,7 @@
+{
+  "parent": "searchlight:block/wall_light",
+  "textures": {
+    "texture": "searchlight:block/wall_light_purple",
+	"particle": "minecraft:block/purple_terracotta"
+  }
+}

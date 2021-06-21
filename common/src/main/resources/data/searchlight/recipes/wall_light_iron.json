@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "iii",
+    "iTi",
+    "   "
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:torch"
+    },
+    "i": {
+      "item": "minecraft:iron_nugget"
+    }
+  },
+  "result": {
+    "item": "searchlight:wall_light_iron"
+  }
+}

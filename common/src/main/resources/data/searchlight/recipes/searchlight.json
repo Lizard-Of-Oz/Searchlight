@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "iIi",
+    "iTi",
+    "GGG"
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:torch"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "i": {
+      "item": "minecraft:iron_nugget"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    }
+  },
+  "result": {
+    "item": "searchlight:searchlight"
+  }
+}

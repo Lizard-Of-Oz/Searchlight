@@ -1,0 +1,7 @@
+{
+  "parent": "searchlight:block/wall_light_floor",
+  "textures": {
+    "texture": "searchlight:block/wall_light_copper",
+	"particle": "searchlight:block/wall_light_copper"
+  }
+}

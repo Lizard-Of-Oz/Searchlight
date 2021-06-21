@@ -1,0 +1,57 @@
+{
+  "variants": {
+    "face=ceiling,facing=east": {
+      "model": "searchlight:block/wall_light_floor_cyan",
+      "x": 180,
+      "y": 270
+    },
+    "face=ceiling,facing=north": {
+      "model": "searchlight:block/wall_light_floor_cyan",
+      "x": 180,
+      "y": 180
+    },
+    "face=ceiling,facing=south": {
+      "model": "searchlight:block/wall_light_floor_cyan",
+      "x": 180
+    },
+    "face=ceiling,facing=west": {
+      "model": "searchlight:block/wall_light_floor_cyan",
+      "x": 180,
+      "y": 90
+    },
+    "face=floor,facing=east": {
+      "model": "searchlight:block/wall_light_floor_cyan",
+      "y": 90
+    },
+    "face=floor,facing=north": {
+      "model": "searchlight:block/wall_light_floor_cyan"
+    },
+    "face=floor,facing=south": {
+      "model": "searchlight:block/wall_light_floor_cyan",
+      "y": 180
+    },
+    "face=floor,facing=west": {
+      "model": "searchlight:block/wall_light_floor_cyan",
+      "y": 270
+    },
+    "face=wall,facing=east": {
+      "model": "searchlight:block/wall_light_cyan",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north": {
+      "model": "searchlight:block/wall_light_cyan",
+      "x": 90
+    },
+    "face=wall,facing=south": {
+      "model": "searchlight:block/wall_light_cyan",
+      "x": 90,
+      "y": 180
+    },
+    "face=wall,facing=west": {
+      "model": "searchlight:block/wall_light_cyan",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

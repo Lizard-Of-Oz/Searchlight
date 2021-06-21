@@ -1,0 +1,6 @@
+{
+  "parent": "searchlight:item/wall_light",
+  "textures": {
+    "texture": "searchlight:block/wall_light_white"
+  }
+}

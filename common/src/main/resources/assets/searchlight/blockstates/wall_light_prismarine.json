@@ -1,0 +1,57 @@
+{
+  "variants": {
+    "face=ceiling,facing=east": {
+      "model": "searchlight:block/wall_light_floor_prismarine",
+      "x": 180,
+      "y": 270
+    },
+    "face=ceiling,facing=north": {
+      "model": "searchlight:block/wall_light_floor_prismarine",
+      "x": 180,
+      "y": 180
+    },
+    "face=ceiling,facing=south": {
+      "model": "searchlight:block/wall_light_floor_prismarine",
+      "x": 180
+    },
+    "face=ceiling,facing=west": {
+      "model": "searchlight:block/wall_light_floor_prismarine",
+      "x": 180,
+      "y": 90
+    },
+    "face=floor,facing=east": {
+      "model": "searchlight:block/wall_light_floor_prismarine",
+      "y": 90
+    },
+    "face=floor,facing=north": {
+      "model": "searchlight:block/wall_light_floor_prismarine"
+    },
+    "face=floor,facing=south": {
+      "model": "searchlight:block/wall_light_floor_prismarine",
+      "y": 180
+    },
+    "face=floor,facing=west": {
+      "model": "searchlight:block/wall_light_floor_prismarine",
+      "y": 270
+    },
+    "face=wall,facing=east": {
+      "model": "searchlight:block/wall_light_prismarine",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north": {
+      "model": "searchlight:block/wall_light_prismarine",
+      "x": 90
+    },
+    "face=wall,facing=south": {
+      "model": "searchlight:block/wall_light_prismarine",
+      "x": 90,
+      "y": 180
+    },
+    "face=wall,facing=west": {
+      "model": "searchlight:block/wall_light_prismarine",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

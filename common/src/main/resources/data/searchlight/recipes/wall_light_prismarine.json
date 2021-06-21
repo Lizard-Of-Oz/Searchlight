@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "iii",
+    "iTi",
+    "   "
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:prismarine_crystals"
+    },
+    "i": {
+      "item": "minecraft:prismarine_shard"
+    }
+  },
+  "result": {
+    "item": "searchlight:wall_light_prismarine"
+  }
+}
