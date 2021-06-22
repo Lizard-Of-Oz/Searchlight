@@ -54,5 +54,12 @@ Copy the jar file into `%root_folder%/mods/` alongside other mods.
 
 Fabric version has a dependency: [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
 
+## Use in modpacks and with other mods
+Feel free to use this mod in a modpack.
+
+For more Vanilla-esque improvements for vanilla problems, consider [Inventorio](https://github.com/Lizard-Of-Oz/Inventorio).
+
+To include this mod as a dependency, use [JitPack](https://jitpack.io/#Lizard-Of-Oz/Searchlight/master-SNAPSHOT)
+
 ### 1.17?
 1.17 version will be released in the following days.
