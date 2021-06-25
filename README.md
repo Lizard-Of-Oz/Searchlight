@@ -36,6 +36,8 @@ To follow Mojang's vision of Vanilla, wood and stone variants of Wall Lights are
 ![Searchlight Recipe](https://user-images.githubusercontent.com/701551/122753504-9034dc00-d2bc-11eb-8e51-15d2c68ee507.png) ![Wall Light Recipes](https://user-images.githubusercontent.com/701551/122753512-91fe9f80-d2bc-11eb-8ebc-11dd4afb8c8e.gif) ![Colored Wall Light Recipes](https://user-images.githubusercontent.com/701551/122753518-932fcc80-d2bc-11eb-878f-0eab985922c5.gif)
 
 ## Technical details
+A searchlight tries to face the player when it gets placed. If a raycast in the player's direction yields no result, if won't create a Light Source. If you right click a Searchlight and a raycast yields no result, it won't move a Light Source.
+
 Light Source is placed 1 block away from any surfaces (if possible) to avoid collision with liquids, is not waterloggable, and gets moved in the direction of a Searchlight when replaced, broken or attempted to get pushed by a piston.
 
 Light Source block can interfere with Observers, tree growth, plant growth etc.
