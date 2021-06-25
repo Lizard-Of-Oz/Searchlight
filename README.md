@@ -23,7 +23,7 @@ Holding a Searchlight will display a beam that points from a Searchlight to its 
 This mod also adds a set of Wall Lights: Iron, Prismarine and 16 Colored variants (matching terracotta's color palette).
 
 ![4](https://user-images.githubusercontent.com/701551/122748901-e868df80-d2b6-11eb-83d1-fe943735a641.png)
-(Copper is reserved for the upcoming 1.17 version)
+(Copper variant is available in 1.17+)
 
 When placed on a wall, its height is adjusted to the eye level specifically to hide the glowing part.  
 
@@ -62,4 +62,4 @@ For more Vanilla-esque improvements for vanilla problems, consider [Inventorio](
 To include this mod as a dependency, use [JitPack](https://jitpack.io/#Lizard-Of-Oz/Searchlight/master-SNAPSHOT)
 
 ### 1.17?
-1.17 version will be released in the following days.
+1.17 version is available in the master branch.
