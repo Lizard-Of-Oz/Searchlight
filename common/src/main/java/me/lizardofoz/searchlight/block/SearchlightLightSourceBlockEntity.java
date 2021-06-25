@@ -1,15 +1,13 @@
 package me.lizardofoz.searchlight.block;
 
 import me.lizardofoz.searchlight.SearchlightMod;
-import me.lizardofoz.searchlight.util.SearchlightUtil;
 import me.lizardofoz.searchlight.util.MutableVector3d;
-import me.lizardofoz.searchlight.util.MutableVector3i;
+import me.lizardofoz.searchlight.util.SearchlightUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,15 +19,15 @@ public class SearchlightLightSourceBlockEntity extends BlockEntity
     //==============================
     //Block Entity Info and Overrides
     //==============================
-    public SearchlightLightSourceBlockEntity()
+    public SearchlightLightSourceBlockEntity(BlockPos blockPos, BlockState blockState)
     {
-        super(SearchlightMod.getLightSourceBlockEntityType());
+        super(SearchlightMod.getLightSourceBlockEntityType(), blockPos, blockState);
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag)
+    public NbtCompound writeNbt(NbtCompound tag)
     {
-        super.toTag(tag);
+        super.writeNbt(tag);
         if (searchlightBlockPos != null)
         {
             tag.putInt("searchlight_x", searchlightBlockPos.getX());
@@ -40,9 +38,9 @@ public class SearchlightLightSourceBlockEntity extends BlockEntity
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag)
+    public void readNbt(NbtCompound tag)
     {
-        super.fromTag(state, tag);
+        super.readNbt(tag);
         if (tag.contains("searchlight_x") && tag.contains("searchlight_y") && tag.contains("searchlight_z"))
             searchlightBlockPos = new BlockPos(tag.getInt("searchlight_x"), tag.getInt("searchlight_y"), tag.getInt("searchlight_z"));
         else
@@ -50,9 +48,9 @@ public class SearchlightLightSourceBlockEntity extends BlockEntity
     }
 
     @Override
-    public CompoundTag toInitialChunkDataTag()
+    public NbtCompound toInitialChunkDataNbt()
     {
-        return this.toTag(super.toInitialChunkDataTag());
+        return this.writeNbt(super.toInitialChunkDataNbt());
     }
 
     //==============================
@@ -82,33 +80,34 @@ public class SearchlightLightSourceBlockEntity extends BlockEntity
     {
         direction = direction.normalize();
         ChunkManager chunkManager = world.getChunkManager();
-        MutableVector3d currentPosVecD = new MutableVector3d(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5);
-        MutableVector3i currentPosVecI = new MutableVector3i(currentPosVecD.x, currentPosVecD.y, currentPosVecD.z);
-        MutableVector3i prevPosVecI = new MutableVector3i(0, 0, 0);
+        MutableVector3d currentBlockPosD = new MutableVector3d(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5);
+        BlockPos.Mutable currentBlockPos = new BlockPos.Mutable(currentBlockPosD.x, currentBlockPosD.y, currentBlockPosD.z);
+        BlockPos.Mutable prevBlockPos = new BlockPos.Mutable(0, 0, 0);
 
-        MutableVector3i currentChunkVec = new MutableVector3i(0, 0, 0);
-        MutableVector3i prevChunkVec = new MutableVector3i(0, 0, 0);
+        BlockPos.Mutable currentChunkPos = new BlockPos.Mutable(0, 0, 0);
+        BlockPos.Mutable prevChunkPos = new BlockPos.Mutable(0, 0, 0);
 
         while (true)
         {
-            prevPosVecI.set(currentPosVecI);
-            currentPosVecD.add(direction);
-            currentPosVecI.set(currentPosVecD);
+            prevBlockPos.set(currentBlockPos);
+            currentBlockPosD.add(direction);
+            currentBlockPos.set(currentBlockPosD.x, currentBlockPosD.y, currentBlockPosD.z);
 
-            if (prevPosVecI.equals(currentPosVecI))
+            if (prevBlockPos.equals(currentBlockPos))
                 continue;
-            if (World.isOutOfBuildLimitVertically(currentPosVecI.y))
+
+            if (!world.isInBuildLimit(currentBlockPos))
                 return null;
 
-            prevChunkVec.set(prevPosVecI.x >> 4, 0, prevPosVecI.z >> 4);
-            currentChunkVec.set(currentPosVecI.x >> 4, 0, currentPosVecI.z >> 4);
+            prevChunkPos.set(prevBlockPos.getX() >> 4, 0, prevBlockPos.getZ() >> 4);
+            currentChunkPos.set(currentBlockPos.getX() >> 4, 0, currentBlockPos.getZ() >> 4);
 
-            if (!prevChunkVec.areSame(currentChunkVec) && !chunkManager.isChunkLoaded(currentPosVecI.x >> 4, currentPosVecI.z >> 4))
+            if (!prevChunkPos.equals(currentChunkPos) && !chunkManager.isChunkLoaded(currentChunkPos.getX(), currentChunkPos.getZ()))
                 return null;
 
-            BlockPos currentBlockPos = new BlockPos(currentPosVecI.x, currentPosVecI.y, currentPosVecI.z);
             if (currentBlockPos.equals(searchlightBlockPos))
                 return null;
+
             if (SearchlightUtil.getBlockStateIfLoaded(world, currentBlockPos).isAir())
                 return SearchlightUtil.moveAwayFromSurfaces(world, currentBlockPos);
         }

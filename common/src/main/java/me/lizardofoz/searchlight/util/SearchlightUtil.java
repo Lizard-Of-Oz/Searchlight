@@ -10,7 +10,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -51,7 +51,7 @@ public final class SearchlightUtil
             {
                 SearchlightMod.LOGGER.error(
                         String.format("Attempted to use a blockEntity '%s' (%s) at %s with world==null.",
-                                blockEntity.toTag(new CompoundTag()),
+                                blockEntity.writeNbt(new NbtCompound()),
                                 blockEntity.getClass(),
                                 blockPos), e);
             }
@@ -67,7 +67,7 @@ public final class SearchlightUtil
         {
             SearchlightMod.LOGGER.error(
                     String.format("Attempted to cast '%s' (%s) at %s but failed",
-                            blockEntity.toTag(new CompoundTag()),
+                            blockEntity.writeNbt(new NbtCompound()),
                             blockEntity.getClass(),
                             blockPos),
                     ex);
@@ -82,9 +82,9 @@ public final class SearchlightUtil
 
     public static @NotNull BlockState getBlockStateIfLoaded(World world, BlockPos blockPos)
     {
-        if (World.isOutOfBuildLimitVertically(blockPos))
+        if (world.isInBuildLimit(blockPos))
             return Blocks.VOID_AIR.getDefaultState();
-        BlockView chunk = world.getExistingChunk(blockPos.getX() >> 4, blockPos.getZ() >> 4);
+        BlockView chunk = world.getChunkAsView(blockPos.getX() >> 4, blockPos.getZ() >> 4);
         if (chunk == null)
             return Blocks.VOID_AIR.getDefaultState();
         return chunk.getBlockState(blockPos);
@@ -118,7 +118,7 @@ public final class SearchlightUtil
     {
         if (blockPos == null)
             return null;
-        BlockPos resultPos = blockPos;
+        BlockPos resultPos = blockPos.toImmutable();
 
         if (!world.getBlockState(resultPos.add(-1, 0, 0)).isAir() && world.getBlockState(resultPos.add(1, 0, 0)).isAir())
             resultPos = resultPos.add(1, 0, 0);

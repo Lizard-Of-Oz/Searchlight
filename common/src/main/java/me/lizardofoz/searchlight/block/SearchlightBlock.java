@@ -45,9 +45,9 @@ public class SearchlightBlock extends WallMountedBlock implements BlockEntityPro
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockView blockView)
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState blockState)
     {
-        return SearchlightMod.getBlockEntityConstructor().get();
+        return SearchlightMod.getBlockEntityConstructor().apply(pos, blockState);
     }
 
     @Override
@@ -87,7 +87,8 @@ public class SearchlightBlock extends WallMountedBlock implements BlockEntityPro
     {
         super.onPlaced(world, pos, state, placer, itemStack);
         if (world != null && !world.isClient)
-            updateSearchLight(world, pos, state, placer);
+            if (!updateSearchLight(world, pos, state, placer))
+                updateSearchLight(world, pos, state, null);
     }
 
     @Override

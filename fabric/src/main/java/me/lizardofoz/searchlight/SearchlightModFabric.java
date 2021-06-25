@@ -8,9 +8,9 @@ import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -54,7 +54,7 @@ public final class SearchlightModFabric extends SearchlightMod implements ModIni
                         .strength(5)
                         .nonOpaque());
         searchlightItem = new BlockItem(searchlightBlock, new FabricItemSettings().group(creativeItemGroup));
-        searchlightBlockEntityType = BlockEntityType.Builder.create(blockEntityConstructor, searchlightBlock).build(null);
+        searchlightBlockEntityType = FabricBlockEntityTypeBuilder.create(SearchlightBlockEntityFabric::create, searchlightBlock).build(null);
 
         Registry.register(Registry.BLOCK, new Identifier("searchlight", "searchlight"), searchlightBlock);
         Registry.register(Registry.ITEM, new Identifier("searchlight", "searchlight"), searchlightItem);
@@ -67,7 +67,7 @@ public final class SearchlightModFabric extends SearchlightMod implements ModIni
     {
         lightSourceBlock = new SearchlightLightSourceBlock(
                 AbstractBlock.Settings.of(
-                        new FabricMaterialBuilder(MaterialColor.CLEAR)
+                        new FabricMaterialBuilder(MapColor.CLEAR)
                                 .replaceable()
                                 .lightPassesThrough()
                                 .notSolid()
@@ -77,7 +77,7 @@ public final class SearchlightModFabric extends SearchlightMod implements ModIni
                         .dropsNothing()
                         .nonOpaque()
                         .luminance((state) -> 15));
-        lightSourceBlockEntityType = BlockEntityType.Builder.create(SearchlightLightSourceBlockEntity::new, lightSourceBlock).build(null);
+        lightSourceBlockEntityType = FabricBlockEntityTypeBuilder.create(SearchlightLightSourceBlockEntity::new, lightSourceBlock).build(null);
 
         Registry.register(Registry.BLOCK, new Identifier("searchlight", "searchlight_lightsource"), lightSourceBlock);
         Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier("searchlight", "searchlight_lightsource_entity"), lightSourceBlockEntityType);
@@ -97,7 +97,7 @@ public final class SearchlightModFabric extends SearchlightMod implements ModIni
     private void registerWallLight(String postfix, Map<Block,Item> wallLightMap)
     {
         Block block = new WallLightBlock(
-                AbstractBlock.Settings.of(Material.SUPPORTED)
+                AbstractBlock.Settings.of(Material.DECORATION)
                         .strength(0.5F)
                         .luminance((state) -> 14)
                         .sounds(BlockSoundGroup.STONE)

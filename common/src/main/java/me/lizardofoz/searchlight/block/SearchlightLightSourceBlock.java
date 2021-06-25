@@ -20,9 +20,9 @@ public class SearchlightLightSourceBlock extends Block implements BlockEntityPro
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockView world)
+    public BlockEntity createBlockEntity(BlockPos blockPos, BlockState blockState)
     {
-        return new SearchlightLightSourceBlockEntity();
+        return new SearchlightLightSourceBlockEntity(blockPos, blockState);
     }
 
     @Override

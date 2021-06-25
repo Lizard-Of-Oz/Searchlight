@@ -5,14 +5,15 @@ import lombok.Getter;
 import me.lizardofoz.searchlight.block.SearchlightBlockEntity;
 import me.lizardofoz.searchlight.block.SearchlightLightSourceBlockEntity;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public abstract class SearchlightMod
 {
@@ -29,5 +30,5 @@ public abstract class SearchlightMod
 
     @Getter protected static ItemGroup creativeItemGroup;
     @Getter protected static Consumer<SearchlightBlockEntity> blockEntitySynchronizer;
-    @Getter protected static Supplier<SearchlightBlockEntity> blockEntityConstructor;
+    @Getter protected static BiFunction<BlockPos, BlockState, SearchlightBlockEntity> blockEntityConstructor;
 }
