@@ -87,7 +87,8 @@ public class SearchlightBlock extends WallMountedBlock implements BlockEntityPro
     {
         super.onPlaced(world, pos, state, placer, itemStack);
         if (world != null && !world.isClient)
-            updateSearchLight(world, pos, state, placer);
+            if (!updateSearchLight(world, pos, state, placer))
+                updateSearchLight(world, pos, state, null);
     }
 
     @Override

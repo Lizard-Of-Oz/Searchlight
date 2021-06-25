@@ -3,7 +3,6 @@ package me.lizardofoz.searchlight.block;
 import lombok.Getter;
 import me.lizardofoz.searchlight.SearchlightMod;
 import me.lizardofoz.searchlight.util.MutableVector3d;
-import me.lizardofoz.searchlight.util.MutableVector3i;
 import me.lizardofoz.searchlight.util.SearchlightUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -153,33 +152,32 @@ public class SearchlightBlockEntity extends BlockEntity
         beamDirection = beamDirection.normalize();
         ChunkManager chunkManager = world.getChunkManager();
 
-        MutableVector3d currentPosVecD = new MutableVector3d(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5);
-        MutableVector3i currentPosVecI = new MutableVector3i(currentPosVecD.x, currentPosVecD.y, currentPosVecD.z);
-        MutableVector3i prevPosVecI = new MutableVector3i(0, 0, 0);
+        MutableVector3d currentBlockPosD = new MutableVector3d(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5);
+        BlockPos.Mutable currentBlockPos = new BlockPos.Mutable(currentBlockPosD.x, currentBlockPosD.y, currentBlockPosD.z);
+        BlockPos.Mutable prevBlockPos = new BlockPos.Mutable(0, 0, 0);
 
-        MutableVector3i currentChunkVec = new MutableVector3i(0, 0, 0);
-        MutableVector3i prevChunkVec = new MutableVector3i(0, 0, 0);
+        BlockPos.Mutable currentChunkPos = new BlockPos.Mutable(0, 0, 0);
+        BlockPos.Mutable prevChunkPos = new BlockPos.Mutable(0, 0, 0);
         BlockPos lastValidBlockPos = null;
 
         while (true)
         {
-            prevPosVecI.set(currentPosVecI);
-            currentPosVecD.add(beamDirection);
-            currentPosVecI.set(currentPosVecD);
+            prevBlockPos.set(currentBlockPos);
+            currentBlockPosD.add(beamDirection);
+            currentBlockPos.set(currentBlockPosD.x, currentBlockPosD.y, currentBlockPosD.z);
 
-            if (prevPosVecI.areSame(currentPosVecI))
+            if (prevBlockPos.equals(currentBlockPos))
                 continue;
-            if (World.isOutOfBuildLimitVertically(currentPosVecI.y))
+
+            if (!World.isInBuildLimit(currentBlockPos))
                 return null;
 
-            prevChunkVec.set(prevPosVecI.x >> 4, 0, prevPosVecI.z >> 4);
-            currentChunkVec.set(currentPosVecI.x >> 4, 0, currentPosVecI.z >> 4);
+            prevChunkPos.set(prevBlockPos.getX() >> 4, 0, prevBlockPos.getZ() >> 4);
+            currentChunkPos.set(currentBlockPos.getX() >> 4, 0, currentBlockPos.getZ() >> 4);
 
-            if (!prevChunkVec.areSame(currentChunkVec) && !chunkManager.isChunkLoaded(currentPosVecI.x >> 4, currentPosVecI.z >> 4))
+            if (!prevChunkPos.equals(currentChunkPos) && !chunkManager.isChunkLoaded(currentChunkPos.getX(), currentChunkPos.getZ()))
                 return null;
 
-            BlockPos currentBlockPos = new BlockPos(currentPosVecI.x, currentPosVecI.y, currentPosVecI.z);
-            BlockPos prevBlockPos = new BlockPos(prevPosVecI.x, prevPosVecI.y, prevPosVecI.z);
             //Better off having to load an unloaded chunk, than peeking into an unloaded chunk and receiving AIR
             BlockState currentBlockState = SearchlightUtil.getBlockStateForceLoad(world, currentBlockPos);
             BlockState prevBlockState = SearchlightUtil.getBlockStateForceLoad(world, prevBlockPos);
@@ -187,13 +185,14 @@ public class SearchlightBlockEntity extends BlockEntity
             if (ChunkLightProvider.getRealisticOpacity(
                     world,
                     prevBlockState, prevBlockPos,
-                    currentBlockState, currentBlockPos, Direction.getFacing(beamDirection.x, beamDirection.y, beamDirection.z),
+                    currentBlockState, currentBlockPos,
+                    Direction.getFacing(beamDirection.x, beamDirection.y, beamDirection.z),
                     currentBlockState.getOpacity(world, currentBlockPos)) >= world.getMaxLightLevel()
                     || !world.getFluidState(currentBlockPos).isEmpty())
                 return SearchlightUtil.moveAwayFromSurfaces(world, lastValidBlockPos);
 
             if (currentBlockState.isAir() || currentBlockPos.equals(lightSourcePos))
-                lastValidBlockPos = currentBlockPos;
+                lastValidBlockPos = currentBlockPos.toImmutable();
         }
     }
 

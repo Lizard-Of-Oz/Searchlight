@@ -118,7 +118,7 @@ public final class SearchlightUtil
     {
         if (blockPos == null)
             return null;
-        BlockPos resultPos = blockPos;
+        BlockPos resultPos = blockPos.toImmutable();
 
         if (!world.getBlockState(resultPos.add(-1, 0, 0)).isAir() && world.getBlockState(resultPos.add(1, 0, 0)).isAir())
             resultPos = resultPos.add(1, 0, 0);

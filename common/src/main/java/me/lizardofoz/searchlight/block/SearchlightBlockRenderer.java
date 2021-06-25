@@ -10,8 +10,6 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.Identifier;
@@ -22,13 +20,11 @@ import net.minecraft.util.math.Vec3d;
 @Environment(EnvType.CLIENT)
 public class SearchlightBlockRenderer extends BlockEntityRenderer<SearchlightBlockEntity>
 {
-    @SuppressWarnings("deprecation")
-    protected static final SpriteIdentifier SEARCHLIGHT_BODY_TEXTURE
-            = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier("searchlight", "block/searchlight"));
-
+    protected static final Identifier SEARCHLIGHT_BODY_TEXTURE = new Identifier("searchlight", "textures/block/searchlight.png");
     protected static final Identifier SEARCHLIGHT_BEAM = new Identifier("searchlight", "textures/block/searchlight_beam.png");
 
     protected static final int MAX_LIGHT = LightmapTextureManager.pack(15, 15);
+    protected static final int NO_LIGHT = LightmapTextureManager.pack(0, 0);
     protected static final int MAX_OVERLAY = OverlayTexture.packUv(15, 15);
 
     protected static final Vector3f CEILING_PIVOT = new Vector3f(8, 10, 8);
@@ -77,7 +73,7 @@ public class SearchlightBlockRenderer extends BlockEntityRenderer<SearchlightBlo
     {
         Vector3f pivot = getModelPivot(blockEntity);
         Vec3d direction = blockEntity.getBeamDirection();
-        VertexConsumer vertexConsumer = SEARCHLIGHT_BODY_TEXTURE.getVertexConsumer(vertexConsumerProvider, RenderLayer::getEntityCutoutNoCull);
+        VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntityCutoutNoCull(SEARCHLIGHT_BODY_TEXTURE, true));
 
         boolean isOnWall = blockEntity.getCachedState().get(WallMountedBlock.FACE) == WallMountLocation.WALL;
         ModelPart body = isOnWall ? onWallBody : onFloorBody;
@@ -92,7 +88,7 @@ public class SearchlightBlockRenderer extends BlockEntityRenderer<SearchlightBlo
         lightFace.setPivot(pivot.getX(), pivot.getY(), pivot.getZ());
         lightFace.yaw = body.yaw;
         lightFace.pitch = body.pitch;
-        lightFace.render(matrixStack, vertexConsumer, MAX_LIGHT, MAX_OVERLAY);
+        lightFace.render(matrixStack, vertexConsumer, blockEntity.getLightSourcePos() != null ? MAX_LIGHT : NO_LIGHT, MAX_OVERLAY);
 
         if (SearchlightUtil.displayBeams() && blockEntity.getLightSourcePos() != null)
         {
