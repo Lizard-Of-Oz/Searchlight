@@ -5,6 +5,8 @@
 ## Searchlight
 This mod adds Searchlight - a special block that doesn't emit light on its own, but casts an invisible Light Source Block in the direction of choosing.
 
+Available for **1.16.3+** (Forge and Fabric) and **1.17+** (Fabric only - Forge 1.17 itself isn't out yet)
+
 ![Searchlights](https://user-images.githubusercontent.com/701551/122744905-ac338000-d2b2-11eb-9b3e-fe84d65922d7.png)
 
 When a player right-clicks a Searchlight block, it rotates in the direction of the player, moving a Light Source block. 
@@ -20,10 +22,9 @@ Holding a Searchlight will display a beam that points from a Searchlight to its 
 ![Beam](https://user-images.githubusercontent.com/701551/122748245-2c0f1980-d2b6-11eb-927f-501392e17f5a.png)
 
 ## Wall Lights
-This mod also adds a set of Wall Lights: Iron, Prismarine and 16 Colored variants (matching terracotta's color palette).
+This mod also adds a set of Wall Lights: Iron, Copper, Prismarine and 16 Colored variants (matching terracotta's color palette).
 
 ![4](https://user-images.githubusercontent.com/701551/122748901-e868df80-d2b6-11eb-83d1-fe943735a641.png)
-(Copper is reserved for the upcoming 1.17 version)
 
 When placed on a wall, its height is adjusted to the eye level specifically to hide the glowing part.  
 
@@ -48,7 +49,8 @@ Light Source that somehow happened to have no associated Searchlight will not be
 
 ## Installation
 Grab the jar file from the [Release page](https://github.com/Lizard-Of-Oz/Searchlight/releases/).
-CurseForge and Modrinth pages are coming soon.
+
+CurseForge: [Fabric Version](https://www.curseforge.com/minecraft/mc-mods/searchlight) and [Forge Version](https://www.curseforge.com/minecraft/mc-mods/searchlight-forge)
  
 Copy the jar file into `%root_folder%/mods/` alongside other mods.
 
@@ -60,6 +62,3 @@ Feel free to use this mod in a modpack.
 For more Vanilla-esque improvements for vanilla problems, consider [Inventorio](https://github.com/Lizard-Of-Oz/Inventorio).
 
 To include this mod as a dependency, use [JitPack](https://jitpack.io/#Lizard-Of-Oz/Searchlight/master-SNAPSHOT)
-
-### 1.17?
-1.17 version will be released in the following days.
