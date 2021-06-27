@@ -51,10 +51,6 @@ jar {
     classifier "dev"
 }
 
-java {
-    withSourcesJar()
-}
-
 sourcesJar {
     def commonSources = project(":common").sourcesJar
     dependsOn commonSources
@@ -65,9 +61,7 @@ publishing {
     publications {
         mavenForge(MavenPublication) {
             artifactId = archivesBaseName
-            artifact(remapJar) {
-                classifier null
-            }
+            artifact remapJar
             artifact(sourcesJar) {
                 builtBy remapSourcesJar
             }
