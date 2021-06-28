@@ -5,8 +5,6 @@
 ## Searchlight
 This mod adds Searchlight - a special block that doesn't emit light on its own, but casts an invisible Light Source Block in the direction of choosing.
 
-Available for **1.16.3+** (Forge and Fabric) and **1.17+** (Fabric only - Forge 1.17 itself isn't out yet)
-
 ![Searchlights](https://user-images.githubusercontent.com/701551/122744905-ac338000-d2b2-11eb-9b3e-fe84d65922d7.png)
 
 When a player right-clicks a Searchlight block, it rotates in the direction of the player, moving a Light Source block. 
@@ -64,4 +62,30 @@ Feel free to use this mod in a modpack.
 
 For more Vanilla-esque improvements for vanilla problems, consider [Inventorio](https://github.com/Lizard-Of-Oz/Inventorio).
 
-To include this mod as a dependency, use [JitPack](https://jitpack.io/#Lizard-Of-Oz/Searchlight/1.16-SNAPSHOT)
+If you want to use this mode as a dependency, I recommend using JitPack. Please note that me using Architectury plugin causes the gradle setup to be different that normal:
+
+Fabric:
+```
+repositories {
+  ...
+  maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+  ...
+  modCompileOnly 'com.github.Lizard-Of-Oz.Searchlight:searchlight-1.16-fabric:1.16-SNAPSHOT'
+}
+```
+
+Forge:
+```
+repositories {
+  ...
+  maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+  ...
+  compileOnly 'com.github.Lizard-Of-Oz.Searchlight:searchlight-1.16-forge:1.16-SNAPSHOT'
+}
+```
