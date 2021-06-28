@@ -63,4 +63,30 @@ Feel free to use this mod in a modpack.
 
 For more Vanilla-esque improvements for vanilla problems, consider [Inventorio](https://github.com/Lizard-Of-Oz/Inventorio).
 
-To include this mod as a dependency, use [JitPack](https://jitpack.io/#Lizard-Of-Oz/Searchlight/master-SNAPSHOT)
+If you want to use this mode as a dependency, I recommend using JitPack. Please note that me using Architectury plugin causes the gradle setup to be different that normal:
+
+Fabric:
+```
+repositories {
+  ...
+  maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+  ...
+  modCompileOnly 'com.github.Lizard-Of-Oz.Searchlight:searchlight-1.17-fabric:1.17-SNAPSHOT'
+}
+```
+
+Forge:
+```
+repositories {
+  ...
+  maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+  ...
+  compileOnly 'com.github.Lizard-Of-Oz.Searchlight:searchlight-1.17-forge:1.17-SNAPSHOT'
+}
+```
