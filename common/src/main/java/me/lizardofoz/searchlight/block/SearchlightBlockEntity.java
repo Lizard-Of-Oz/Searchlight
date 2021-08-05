@@ -7,7 +7,6 @@ import me.lizardofoz.searchlight.util.SearchlightUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -22,9 +21,9 @@ public class SearchlightBlockEntity extends BlockEntity
     @Getter
     private @Nullable BlockPos lightSourcePos;
 
-    public SearchlightBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState)
+    public SearchlightBlockEntity(BlockPos blockPos, BlockState blockState)
     {
-        super(blockEntityType, blockPos, blockState);
+        super(SearchlightMod.getSearchlightBlockEntityType(), blockPos, blockState);
     }
 
     //==============================

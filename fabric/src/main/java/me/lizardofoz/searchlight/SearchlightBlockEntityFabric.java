@@ -9,7 +9,7 @@ public class SearchlightBlockEntityFabric extends SearchlightBlockEntity impleme
 {
     public SearchlightBlockEntityFabric(BlockPos blockPos, BlockState blockState)
     {
-        super(SearchlightMod.getSearchlightBlockEntityType(), blockPos, blockState);
+        super(blockPos, blockState);
     }
 
     public static SearchlightBlockEntity create(BlockPos blockPos, BlockState blockState)
