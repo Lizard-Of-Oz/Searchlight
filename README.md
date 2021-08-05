@@ -5,7 +5,7 @@
 ## Searchlight
 This mod adds Searchlight - a special block that doesn't emit light on its own, but casts an invisible Light Source Block in the direction of choosing.
 
-Available for **1.16.3+** (Forge and Fabric) and **1.17+** (Fabric only - Forge 1.17 itself isn't out yet)
+Available for **1.16.3+** and **1.17+** (both Forge and Fabric)
 
 ![Searchlights](https://user-images.githubusercontent.com/701551/122744905-ac338000-d2b2-11eb-9b3e-fe84d65922d7.png)
 
