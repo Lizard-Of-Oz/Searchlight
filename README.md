@@ -1,6 +1,16 @@
 # Searchlight (& Wall Lights) (Forge / Fabric)
 
-![Thumbnail](https://user-images.githubusercontent.com/701551/122744649-637bc700-d2b2-11eb-80d6-8df999b4a763.png)
+## Showcase Video
+[![Video Demonstration](https://user-images.githubusercontent.com/701551/125157958-18a9ec80-e198-11eb-9386-e45f4491cc73.png)](https://youtu.be/F529FUwWBxc)
+
+## Installation
+Grab the jar file from the [Release page](https://github.com/Lizard-Of-Oz/Searchlight/releases/).
+
+Or from CurseForge: [Fabric Version](https://www.curseforge.com/minecraft/mc-mods/searchlight) and [Forge Version](https://www.curseforge.com/minecraft/mc-mods/searchlight-forge)
+ 
+Copy the jar file into `%root_folder%/mods/` alongside other mods.
+
+Fabric version has a dependency: [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
 
 ## Searchlight
 This mod adds Searchlight - a special block that doesn't emit light on its own, but casts an invisible Light Source Block in the direction of choosing.
@@ -48,15 +58,6 @@ Light Source placing raycast (when you right-click a Searchlight) doesn't go thr
 Raycast works within the chunks loaded by the server, but manipulating a Searchlight will cause an unloaded chunk with a Light Source to load and vice-versa. 
 
 Light Source that somehow happened to have no associated Searchlight will not be automatically deleted, but won't get restated if replaced manually.
-
-## Installation
-Grab the jar file from the [Release page](https://github.com/Lizard-Of-Oz/Searchlight/releases/).
-
-CurseForge: [Fabric Version](https://www.curseforge.com/minecraft/mc-mods/searchlight) and [Forge Version](https://www.curseforge.com/minecraft/mc-mods/searchlight-forge)
- 
-Copy the jar file into `%root_folder%/mods/` alongside other mods.
-
-Fabric version has a dependency: [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
 
 ## Use in modpacks and with other mods
 Feel free to use this mod in a modpack.
