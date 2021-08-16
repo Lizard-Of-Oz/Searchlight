@@ -7,8 +7,10 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
@@ -48,10 +50,11 @@ public final class SearchlightModFabric extends SearchlightMod implements ModIni
     private void registerSearchlightBlock()
     {
         searchlightBlock = new SearchlightBlock(
-                AbstractBlock.Settings.of(Material.METAL)
+                FabricBlockSettings.of(Material.METAL, MapColor.CLEAR)
                         .sounds(BlockSoundGroup.METAL)
+                        .breakByTool(FabricToolTags.PICKAXES, 2)
                         .requiresTool()
-                        .strength(5)
+                        .strength(4)
                         .nonOpaque());
         searchlightItem = new BlockItem(searchlightBlock, new FabricItemSettings().group(creativeItemGroup));
         searchlightBlockEntityType = FabricBlockEntityTypeBuilder.create(SearchlightBlockEntityFabric::create, searchlightBlock).build(null);

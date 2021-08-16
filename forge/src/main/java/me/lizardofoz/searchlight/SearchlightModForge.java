@@ -55,10 +55,9 @@ public final class SearchlightModForge extends SearchlightMod
     private void registerSearchlightBlock()
     {
         searchlightBlock = new SearchlightBlock(
-                AbstractBlock.Settings.of(Material.METAL)
+                AbstractBlock.Settings.of(Material.METAL, MapColor.CLEAR)
                         .sounds(BlockSoundGroup.METAL)
-                        .requiresTool()
-                        .strength(5)
+                        .strength(1)
                         .nonOpaque());
         searchlightItem = new BlockItem(searchlightBlock, new Item.Settings().group(creativeItemGroup));
         searchlightBlockEntityType = BlockEntityType.Builder
