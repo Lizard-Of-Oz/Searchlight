@@ -25,7 +25,7 @@ public class SearchlightLightSourceBlockEntity extends BlockEntity
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag)
+    public void writeNbt(NbtCompound tag)
     {
         super.writeNbt(tag);
         if (searchlightBlockPos != null)
@@ -34,7 +34,6 @@ public class SearchlightLightSourceBlockEntity extends BlockEntity
             tag.putInt("searchlight_y", searchlightBlockPos.getY());
             tag.putInt("searchlight_z", searchlightBlockPos.getZ());
         }
-        return tag;
     }
 
     @Override
@@ -50,7 +49,9 @@ public class SearchlightLightSourceBlockEntity extends BlockEntity
     @Override
     public NbtCompound toInitialChunkDataNbt()
     {
-        return this.writeNbt(super.toInitialChunkDataNbt());
+        NbtCompound tag = super.toInitialChunkDataNbt();
+        this.writeNbt(tag);
+        return tag;
     }
 
     //==============================

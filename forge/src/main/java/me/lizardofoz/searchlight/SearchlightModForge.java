@@ -33,7 +33,6 @@ public final class SearchlightModForge extends SearchlightMod
 
     public SearchlightModForge()
     {
-        PacketStuff.initialize();
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         TILE_ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -44,8 +43,6 @@ public final class SearchlightModForge extends SearchlightMod
                 return new ItemStack(searchlightBlock);
             }
         };
-        blockEntitySynchronizer = PacketStuff::sendUpdateRequestToClient;
-        blockEntityConstructor = SearchlightBlockEntity::new;
 
         registerSearchlightBlock();
         registerSearchlightLightSourceBlock();
@@ -61,7 +58,7 @@ public final class SearchlightModForge extends SearchlightMod
                         .nonOpaque());
         searchlightItem = new BlockItem(searchlightBlock, new Item.Settings().group(creativeItemGroup));
         searchlightBlockEntityType = BlockEntityType.Builder
-                .create((blockPos, blockState) -> blockEntityConstructor.apply(blockPos, blockState), searchlightBlock)
+                .create(SearchlightBlockEntity::new, searchlightBlock)
                 .build(null);
 
         BLOCKS.register("searchlight", () -> searchlightBlock);

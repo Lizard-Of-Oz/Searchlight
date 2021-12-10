@@ -11,7 +11,7 @@
     "issues": "${github}/issues"
   },
 
-  "license": "GPLv3",
+  "license": "LGPLv3",
   "icon": "icon.png",
 
   "environment": "*",
@@ -21,7 +21,7 @@
     ]
   },
   "depends": {
-    "minecraft": "1.17.x",
+    "minecraft": "1.18.x",
     "fabricloader": ">=${fabric_loader_version}",
     "fabric": "*"
   }

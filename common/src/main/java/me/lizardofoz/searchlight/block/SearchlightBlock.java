@@ -1,6 +1,5 @@
 package me.lizardofoz.searchlight.block;
 
-import me.lizardofoz.searchlight.SearchlightMod;
 import me.lizardofoz.searchlight.util.SearchlightUtil;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -12,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -26,6 +27,8 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("deprecation")
 public class SearchlightBlock extends WallMountedBlock implements BlockEntityProvider
 {
+    public static final BooleanProperty POWERED = Properties.POWERED;
+
     protected static final VoxelShape CEILING_SHAPE = Block.createCuboidShape(3, 3, 3, 13, 16, 13);
     protected static final VoxelShape FLOOR_SHAPE = Block.createCuboidShape(3, 0, 3, 13, 13, 13);
     protected static final VoxelShape NORTH_SHAPE = Block.createCuboidShape(3, 3, 3, 13, 13, 16);
@@ -41,19 +44,20 @@ public class SearchlightBlock extends WallMountedBlock implements BlockEntityPro
         super(settings);
         this.setDefaultState(this.stateManager.getDefaultState()
                 .with(FACING, Direction.NORTH)
-                .with(FACE, WallMountLocation.WALL));
+                .with(FACE, WallMountLocation.WALL)
+                .with(POWERED, false));
     }
 
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState blockState)
     {
-        return SearchlightMod.getBlockEntityConstructor().apply(pos, blockState);
+        return new SearchlightBlockEntity(pos, blockState);
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder)
     {
-        builder.add(FACING, FACE);
+        builder.add(FACING, FACE, POWERED);
     }
 
     @Override
@@ -82,6 +86,18 @@ public class SearchlightBlock extends WallMountedBlock implements BlockEntityPro
     //==============================
     //Block overrides and functionality
     //==============================
+
+    @Override
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify)
+    {
+        boolean isPoweredNow = world.isReceivingRedstonePower(pos);
+        boolean wasPoweredBefore = state.get(POWERED);
+        if (!wasPoweredBefore && isPoweredNow)
+            SearchlightUtil.castBlockEntity(world.getBlockEntity(pos), pos, SearchlightBlockEntity::turnOffLightSource);
+        else if (wasPoweredBefore && !isPoweredNow)
+            SearchlightUtil.castBlockEntity(world.getBlockEntity(pos), pos, SearchlightBlockEntity::turnOnLightSource);
+    }
+
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack)
     {

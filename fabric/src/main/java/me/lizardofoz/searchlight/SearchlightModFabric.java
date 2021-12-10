@@ -12,7 +12,10 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.*;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.MapColor;
+import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -20,7 +23,6 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,14 +35,6 @@ public final class SearchlightModFabric extends SearchlightMod implements ModIni
         creativeItemGroup = FabricItemGroupBuilder.build(
                 new Identifier("searchlight", "searchlight"),
                 () -> new ItemStack(searchlightBlock));
-
-        blockEntitySynchronizer = blockEntity -> {
-            BlockState state = blockEntity.getCachedState();
-            World world = blockEntity.getWorld();
-            if (world != null)
-                world.updateListeners(blockEntity.getPos(), state, state, 2);
-        };
-        blockEntityConstructor = SearchlightBlockEntityFabric::new;
 
         registerSearchlightBlock();
         registerSearchlightLightSourceBlock();
@@ -57,7 +51,7 @@ public final class SearchlightModFabric extends SearchlightMod implements ModIni
                         .strength(4)
                         .nonOpaque());
         searchlightItem = new BlockItem(searchlightBlock, new FabricItemSettings().group(creativeItemGroup));
-        searchlightBlockEntityType = FabricBlockEntityTypeBuilder.create(SearchlightBlockEntityFabric::create, searchlightBlock).build(null);
+        searchlightBlockEntityType = FabricBlockEntityTypeBuilder.create(SearchlightBlockEntity::new, searchlightBlock).build(null);
 
         Registry.register(Registry.BLOCK, new Identifier("searchlight", "searchlight"), searchlightBlock);
         Registry.register(Registry.ITEM, new Identifier("searchlight", "searchlight"), searchlightItem);

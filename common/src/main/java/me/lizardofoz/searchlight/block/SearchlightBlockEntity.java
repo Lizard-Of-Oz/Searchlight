@@ -8,6 +8,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -31,7 +35,12 @@ public class SearchlightBlockEntity extends BlockEntity
     //==============================
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag)
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this, BlockEntity::createNbt);
+    }
+
+    @Override
+    public void writeNbt(NbtCompound tag)
     {
         super.writeNbt(tag);
         if (lightSourcePos != null)
@@ -40,23 +49,12 @@ public class SearchlightBlockEntity extends BlockEntity
             tag.putInt("light_source_y", lightSourcePos.getY());
             tag.putInt("light_source_z", lightSourcePos.getZ());
         }
-        return tag;
-    }
-
-    public NbtCompound toClientTag(@NotNull NbtCompound tag)
-    {
-        return writeNbt(tag);
     }
 
     @Override
     public void readNbt(NbtCompound tag)
     {
         super.readNbt(tag);
-        fromClientTag(tag);
-    }
-
-    public void fromClientTag(@NotNull NbtCompound tag)
-    {
         if (tag.contains("light_source_x") && tag.contains("light_source_y") && tag.contains("light_source_z"))
             lightSourcePos = new BlockPos(tag.getInt("light_source_x"), tag.getInt("light_source_y"), tag.getInt("light_source_z"));
         else
@@ -66,7 +64,9 @@ public class SearchlightBlockEntity extends BlockEntity
     @Override
     public NbtCompound toInitialChunkDataNbt()
     {
-        return this.writeNbt(super.toInitialChunkDataNbt());
+        NbtCompound tag = super.toInitialChunkDataNbt();
+        this.writeNbt(tag);
+        return tag;
     }
 
     //==============================
@@ -90,6 +90,35 @@ public class SearchlightBlockEntity extends BlockEntity
         setLightSourcePos(null);
         if (oldLightSourcePos != null && SearchlightUtil.getBlockStateForceLoad(world, oldLightSourcePos).getBlock() instanceof SearchlightLightSourceBlock)
             return SearchlightUtil.setBlockStateForceLoad(world, oldLightSourcePos, Blocks.AIR.getDefaultState());
+        return false;
+    }
+
+    public boolean turnOffLightSource()
+    {
+        BlockPos lightPos = getLightSourcePos();
+        if (lightPos == null)
+            return false;
+
+        deleteLightSource();
+
+        if (SearchlightUtil.setBlockStateForceLoad(world, pos, getCachedState().with(SearchlightBlock.POWERED, true)))
+            return SearchlightUtil.castBlockEntity(world.getBlockEntity(pos), pos, (SearchlightBlockEntity blockEntity) -> blockEntity.setLightSourcePos(lightPos));
+        return false;
+    }
+
+    public boolean turnOnLightSource()
+    {
+        BlockPos lightPos = getLightSourcePos();
+        if (lightPos == null)
+            return false;
+
+        if (SearchlightUtil.setBlockStateForceLoad(world, pos, getCachedState().with(SearchlightBlock.POWERED, false)))
+        {
+            if (world.getBlockState(lightPos).isAir())
+                return SearchlightUtil.castBlockEntity(world.getBlockEntity(pos), pos, (SearchlightBlockEntity blockEntity) -> blockEntity.placeLightSource(lightPos));
+            BlockPos dire = lightPos.subtract(pos);
+            return this.raycastAndPlaceLightSource(new Vec3d(dire.getX(), dire.getY(), dire.getZ()));
+        }
         return false;
     }
 
@@ -196,6 +225,6 @@ public class SearchlightBlockEntity extends BlockEntity
     {
         this.lightSourcePos = lightSourcePos;
         if (world != null && !world.isClient)
-            SearchlightMod.getBlockEntitySynchronizer().accept(this);
+            ((ServerWorld)world).getChunkManager().markForUpdate(pos);
     }
 }

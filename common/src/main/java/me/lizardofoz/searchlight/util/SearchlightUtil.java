@@ -10,7 +10,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -19,6 +18,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.function.Consumer;
 
 public final class SearchlightUtil
@@ -51,7 +51,7 @@ public final class SearchlightUtil
             {
                 SearchlightMod.LOGGER.error(
                         String.format("Attempted to use a blockEntity '%s' (%s) at %s with world==null.",
-                                blockEntity.writeNbt(new NbtCompound()),
+                                blockEntity,
                                 blockEntity.getClass(),
                                 blockPos), e);
             }
@@ -67,7 +67,7 @@ public final class SearchlightUtil
         {
             SearchlightMod.LOGGER.error(
                     String.format("Attempted to cast '%s' (%s) at %s but failed",
-                            blockEntity.writeNbt(new NbtCompound()),
+                            blockEntity,
                             blockEntity.getClass(),
                             blockPos),
                     ex);
