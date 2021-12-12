@@ -73,6 +73,7 @@ public class SearchlightBlockRenderer implements BlockEntityRenderer<Searchlight
         return true;
     }
 
+    @SuppressWarnings("SuspiciousNameCombination")
     @Override
     public void render(SearchlightBlockEntity blockEntity, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, int overlay)
     {
@@ -89,11 +90,12 @@ public class SearchlightBlockRenderer implements BlockEntityRenderer<Searchlight
         body.pitch = (float) (MathHelper.atan2(Math.sqrt(direction.z * direction.z + direction.x * direction.x), direction.y) + Math.PI);
         body.render(matrixStack, vertexConsumer, light, overlay);
 
+        boolean shouldRenderLight = blockEntity.getLightSourcePos() != null && !blockEntity.getCachedState().get(SearchlightBlock.POWERED);
         //This portion renders the luminous front surface of the searchlight
         lightFace.setPivot(pivot.getX(), pivot.getY(), pivot.getZ());
         lightFace.yaw = body.yaw;
         lightFace.pitch = body.pitch;
-        lightFace.render(matrixStack, vertexConsumer, blockEntity.getLightSourcePos() != null ? MAX_LIGHT : NO_LIGHT, MAX_OVERLAY);
+        lightFace.render(matrixStack, vertexConsumer, shouldRenderLight ? MAX_LIGHT : NO_LIGHT, MAX_OVERLAY);
 
         if (SearchlightUtil.displayBeams() && blockEntity.getLightSourcePos() != null)
         {
