@@ -1,75 +1,62 @@
 package me.lizardofoz.searchlight;
 
-import com.google.common.collect.ImmutableMap;
 import me.lizardofoz.searchlight.block.*;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.DyeColor;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 @Mod("searchlight")
 public final class SearchlightModForge extends SearchlightMod
 {
-    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, "searchlight");
-    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, "searchlight");
-    private static final DeferredRegister<BlockEntityType<?>> TILE_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, "searchlight");
+    private HashMap<String, Object> wallLightTypes = new HashMap<>();
 
     public SearchlightModForge()
     {
-        BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        TILE_ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        FMLJavaModLoadingContext.get().getModEventBus().register(this);
 
-        creativeItemGroup = new ItemGroup("searchlight") {
+        creativeItemGroup = new ItemGroup("searchlight")
+        {
             @Override
-            public ItemStack createIcon() {
+            public ItemStack createIcon()
+            {
                 return new ItemStack(searchlightBlock);
             }
         };
 
-        registerSearchlightBlock();
-        registerSearchlightLightSourceBlock();
-        registerWallLightBlocks();
+        wallLightTypes.put("iron", new Object());
+        wallLightTypes.put("copper", new Object());
+        wallLightTypes.put("prismarine", new Object());
+        for (DyeColor color : DyeColor.values())
+            wallLightTypes.put(color.getName(), new Object());
     }
 
-    private void registerSearchlightBlock()
+    @SubscribeEvent
+    public void registerSearchlightBlock(RegistryEvent.Register<Block> event)
     {
         searchlightBlock = new SearchlightBlock(
                 AbstractBlock.Settings.of(Material.METAL, MapColor.CLEAR)
                         .sounds(BlockSoundGroup.METAL)
-                        .strength(1)
-                        .nonOpaque());
-        searchlightItem = new BlockItem(searchlightBlock, new Item.Settings().group(creativeItemGroup));
-        searchlightBlockEntityType = BlockEntityType.Builder
-                .create(SearchlightBlockEntity::new, searchlightBlock)
-                .build(null);
+                        .strength(4)
+                        .requiresTool()
+                        .nonOpaque())
+                .setRegistryName("searchlight");
+        event.getRegistry().register(searchlightBlock);
 
-        BLOCKS.register("searchlight", () -> searchlightBlock);
-        ITEMS.register("searchlight", () -> searchlightItem);
-        TILE_ENTITIES.register("searchlight_entity", () -> searchlightBlockEntityType);
-        if (FMLEnvironment.dist == Dist.CLIENT)
-            BlockEntityRendererFactories.register(searchlightBlockEntityType, SearchlightBlockRenderer::new);
-    }
-
-    private void registerSearchlightLightSourceBlock()
-    {
         lightSourceBlock = new SearchlightLightSourceBlock(
                 AbstractBlock.Settings.of(
                         new Material.Builder(MapColor.CLEAR)
@@ -80,37 +67,68 @@ public final class SearchlightModForge extends SearchlightMod
                         .strength(3600000.8F)
                         .dropsNothing()
                         .nonOpaque()
-                        .luminance((state) -> 15));
-        lightSourceBlockEntityType = BlockEntityType.Builder.create(SearchlightLightSourceBlockEntity::new, lightSourceBlock).build(null);
-
-        BLOCKS.register("searchlight_lightsource", () -> lightSourceBlock);
-        TILE_ENTITIES.register("searchlight_lightsource_entity", () -> lightSourceBlockEntityType);
+                        .luminance((state) -> 15))
+                .setRegistryName("searchlight_lightsource");
+        event.getRegistry().register(lightSourceBlock);
     }
 
-    private void registerWallLightBlocks()
+    @SubscribeEvent
+    public void registerSearchlightBlockItem(RegistryEvent.Register<Item> event)
     {
-        Map<Block, Item> wallLights = new HashMap<>();
-        registerWallLight("iron", wallLights);
-        registerWallLight("copper", wallLights);
-        registerWallLight("prismarine", wallLights);
-        for (DyeColor color : DyeColor.values())
-            registerWallLight(color.getName(), wallLights);
-        wallLightBlocks = ImmutableMap.copyOf(wallLights);
+        searchlightItem = new BlockItem(searchlightBlock, new Item.Settings().group(creativeItemGroup));
+        searchlightItem.setRegistryName("searchlight");
+        event.getRegistry().register(searchlightItem);
     }
 
-    private void registerWallLight(String postfix, Map<Block,Item> wallLightMap)
+    @SubscribeEvent
+    public void registerLightBlockEntity(RegistryEvent.Register<BlockEntityType<?>> event)
     {
-        Block block = new WallLightBlock(
-                AbstractBlock.Settings.of(Material.DECORATION)
-                        .strength(0.5F)
-                        .luminance((state) -> 14)
-                        .sounds(BlockSoundGroup.STONE)
-                        .nonOpaque()
-                        .noCollision());
-        Item item = new BlockItem(block, new Item.Settings().group(creativeItemGroup));
+        searchlightBlockEntityType = BlockEntityType.Builder
+                .create(SearchlightBlockEntity::new, searchlightBlock)
+                .build(null);
+        searchlightBlockEntityType.setRegistryName("searchlight_entity");
+        event.getRegistry().register(searchlightBlockEntityType);
 
-        BLOCKS.register("wall_light_" + postfix, () -> block);
-        ITEMS.register("wall_light_" + postfix, () -> item);
-        wallLightMap.put(block, item);
+        lightSourceBlockEntityType = BlockEntityType.Builder
+                .create(SearchlightLightSourceBlockEntity::new, lightSourceBlock)
+                .build(null);
+        lightSourceBlockEntityType.setRegistryName("searchlight_lightsource_entity");
+        event.getRegistry().register(lightSourceBlockEntityType);
+    }
+
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public void registerEntityRenderer(EntityRenderersEvent.RegisterRenderers event)
+    {
+        event.registerBlockEntityRenderer(searchlightBlockEntityType, SearchlightBlockRenderer::new);
+    }
+
+    @SubscribeEvent
+    public void registerWallLightBlocks(RegistryEvent.Register<Block> event)
+    {
+        for (String postfix : new ArrayList<>(wallLightTypes.keySet()))
+        {
+            Block block = new WallLightBlock(
+                    AbstractBlock.Settings.of(Material.DECORATION)
+                            .strength(0.5F)
+                            .luminance((state) -> 14)
+                            .sounds(BlockSoundGroup.STONE)
+                            .nonOpaque()
+                            .noCollision());
+            block.setRegistryName("wall_light_" + postfix);
+            event.getRegistry().register(block);
+            wallLightTypes.put(postfix, block);
+        }
+    }
+
+    @SubscribeEvent
+    public void registerWallLightBlockItems(RegistryEvent.Register<Item> event)
+    {
+        for (Map.Entry<String, Object> entry : wallLightTypes.entrySet())
+        {
+            Block block = (Block) entry.getValue();
+            Item item = new BlockItem(block, new Item.Settings().group(creativeItemGroup)).setRegistryName("wall_light_" + entry.getKey());
+            event.getRegistry().register(item);
+        }
     }
 }

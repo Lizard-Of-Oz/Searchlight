@@ -10,7 +10,6 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -46,7 +45,6 @@ public final class SearchlightModFabric extends SearchlightMod implements ModIni
         searchlightBlock = new SearchlightBlock(
                 FabricBlockSettings.of(Material.METAL, MapColor.CLEAR)
                         .sounds(BlockSoundGroup.METAL)
-                        .breakByTool(FabricToolTags.PICKAXES, 2)
                         .requiresTool()
                         .strength(4)
                         .nonOpaque());

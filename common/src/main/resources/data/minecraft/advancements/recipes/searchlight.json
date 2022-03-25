@@ -1,0 +1,66 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "searchlight:searchlight",
+      "searchlight:wall_light_black",
+      "searchlight:wall_light_blue",
+      "searchlight:wall_light_brown",
+      "searchlight:wall_light_copper",
+      "searchlight:wall_light_cyan",
+      "searchlight:wall_light_gray",
+      "searchlight:wall_light_green",
+      "searchlight:wall_light_iron",
+      "searchlight:wall_light_light_blue",
+      "searchlight:wall_light_light_gray",
+      "searchlight:wall_light_lime",
+      "searchlight:wall_light_magenta",
+      "searchlight:wall_light_orange",
+      "searchlight:wall_light_pink",
+      "searchlight:wall_light_prismarine",
+      "searchlight:wall_light_purple",
+      "searchlight:wall_light_red",
+      "searchlight:wall_light_white",
+      "searchlight:wall_light_yellow"
+    ]
+  },
+  "criteria": {
+    "has_iron_nugget": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:iron_nugget"
+            ]
+          }
+        ]
+      }
+    },
+    "has_iron_ingot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:iron_ingot"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "searchlight:searchlight"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_iron_nugget",
+      "has_iron_ingot",
+      "has_the_recipe"
+    ]
+  ]
+}
