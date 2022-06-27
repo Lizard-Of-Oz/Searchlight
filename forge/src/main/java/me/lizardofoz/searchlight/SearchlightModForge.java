@@ -6,19 +6,23 @@ import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Identifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 @Mod("searchlight")
 public final class SearchlightModForge extends SearchlightMod
@@ -46,54 +50,67 @@ public final class SearchlightModForge extends SearchlightMod
     }
 
     @SubscribeEvent
-    public void registerSearchlightBlock(RegistryEvent.Register<Block> event)
+    public void forgePleaseStopChangingYourAPI(RegisterEvent event)
     {
-        searchlightBlock = new SearchlightBlock(
-                AbstractBlock.Settings.of(Material.METAL, MapColor.CLEAR)
-                        .sounds(BlockSoundGroup.METAL)
-                        .strength(4)
-                        .requiresTool()
-                        .nonOpaque())
-                .setRegistryName("searchlight");
-        event.getRegistry().register(searchlightBlock);
+        event.register(ForgeRegistries.Keys.BLOCKS, helper -> {
+            searchlightBlock = new SearchlightBlock(
+                    AbstractBlock.Settings.of(Material.METAL, MapColor.CLEAR)
+                            .sounds(BlockSoundGroup.METAL)
+                            .strength(4)
+                            .requiresTool()
+                            .nonOpaque());
 
-        lightSourceBlock = new SearchlightLightSourceBlock(
-                AbstractBlock.Settings.of(
-                        new Material.Builder(MapColor.CLEAR)
-                                .replaceable()
-                                .notSolid()
-                                .build())
-                        .sounds(BlockSoundGroup.WOOD)
-                        .strength(3600000.8F)
-                        .dropsNothing()
-                        .nonOpaque()
-                        .luminance((state) -> 15))
-                .setRegistryName("searchlight_lightsource");
-        event.getRegistry().register(lightSourceBlock);
-    }
+            lightSourceBlock = new SearchlightLightSourceBlock(
+                    AbstractBlock.Settings.of(
+                                    new Material.Builder(MapColor.CLEAR)
+                                            .replaceable()
+                                            .notSolid()
+                                            .build())
+                            .sounds(BlockSoundGroup.WOOD)
+                            .strength(3600000.8F)
+                            .dropsNothing()
+                            .nonOpaque()
+                            .luminance((state) -> 15));
 
-    @SubscribeEvent
-    public void registerSearchlightBlockItem(RegistryEvent.Register<Item> event)
-    {
-        searchlightItem = new BlockItem(searchlightBlock, new Item.Settings().group(creativeItemGroup));
-        searchlightItem.setRegistryName("searchlight");
-        event.getRegistry().register(searchlightItem);
-    }
+            helper.register(new Identifier("searchlight", "searchlight"), searchlightBlock);
+            helper.register(new Identifier("searchlight", "searchlight_lightsource"), lightSourceBlock);
 
-    @SubscribeEvent
-    public void registerLightBlockEntity(RegistryEvent.Register<BlockEntityType<?>> event)
-    {
-        searchlightBlockEntityType = BlockEntityType.Builder
-                .create(SearchlightBlockEntity::new, searchlightBlock)
-                .build(null);
-        searchlightBlockEntityType.setRegistryName("searchlight_entity");
-        event.getRegistry().register(searchlightBlockEntityType);
+            for (String postfix : new ArrayList<>(wallLightTypes.keySet()))
+            {
+                Block block = new WallLightBlock(
+                        AbstractBlock.Settings.of(Material.DECORATION)
+                                .strength(0.5F)
+                                .luminance((state) -> 14)
+                                .sounds(BlockSoundGroup.STONE)
+                                .nonOpaque()
+                                .noCollision());
+                wallLightTypes.put(postfix, block);
+                helper.register(new Identifier("searchlight", "wall_light_" + postfix), (Block) block);
+            }
+        });
 
-        lightSourceBlockEntityType = BlockEntityType.Builder
-                .create(SearchlightLightSourceBlockEntity::new, lightSourceBlock)
-                .build(null);
-        lightSourceBlockEntityType.setRegistryName("searchlight_lightsource_entity");
-        event.getRegistry().register(lightSourceBlockEntityType);
+        event.register(ForgeRegistries.Keys.BLOCK_ENTITY_TYPES, helper -> {
+            searchlightBlockEntityType = BlockEntityType.Builder
+                    .create(SearchlightBlockEntity::new, searchlightBlock)
+                    .build(null);
+
+            lightSourceBlockEntityType = BlockEntityType.Builder
+                    .create(SearchlightLightSourceBlockEntity::new, lightSourceBlock)
+                    .build(null);
+
+            helper.register(new Identifier("searchlight", "searchlight_entity"), searchlightBlockEntityType);
+            helper.register(new Identifier("searchlight", "searchlight_lightsource_entity"), lightSourceBlockEntityType);
+        });
+
+        event.register(ForgeRegistries.Keys.ITEMS, helper -> {
+            searchlightItem = new BlockItem(searchlightBlock, new Item.Settings().group(creativeItemGroup));
+            helper.register(new Identifier("searchlight", "searchlight"), searchlightItem);
+
+            wallLightTypes.forEach((postfix, block) -> {
+                Item item = new BlockItem((Block) block, new Item.Settings().group(creativeItemGroup));
+                helper.register(new Identifier("searchlight", "wall_light_" + postfix), item);
+            });
+        });
     }
 
     @SubscribeEvent
@@ -101,34 +118,5 @@ public final class SearchlightModForge extends SearchlightMod
     public void registerEntityRenderer(EntityRenderersEvent.RegisterRenderers event)
     {
         event.registerBlockEntityRenderer(searchlightBlockEntityType, SearchlightBlockRenderer::new);
-    }
-
-    @SubscribeEvent
-    public void registerWallLightBlocks(RegistryEvent.Register<Block> event)
-    {
-        for (String postfix : new ArrayList<>(wallLightTypes.keySet()))
-        {
-            Block block = new WallLightBlock(
-                    AbstractBlock.Settings.of(Material.DECORATION)
-                            .strength(0.5F)
-                            .luminance((state) -> 14)
-                            .sounds(BlockSoundGroup.STONE)
-                            .nonOpaque()
-                            .noCollision());
-            block.setRegistryName("wall_light_" + postfix);
-            event.getRegistry().register(block);
-            wallLightTypes.put(postfix, block);
-        }
-    }
-
-    @SubscribeEvent
-    public void registerWallLightBlockItems(RegistryEvent.Register<Item> event)
-    {
-        for (Map.Entry<String, Object> entry : wallLightTypes.entrySet())
-        {
-            Block block = (Block) entry.getValue();
-            Item item = new BlockItem(block, new Item.Settings().group(creativeItemGroup)).setRegistryName("wall_light_" + entry.getKey());
-            event.getRegistry().register(item);
-        }
     }
 }

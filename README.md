@@ -1,7 +1,7 @@
 # Searchlight (& Wall Lights) (Forge / Fabric)
 
 ## Showcase Video
-[![Video Demonstration](https://user-images.githubusercontent.com/701551/125157958-18a9ec80-e198-11eb-9386-e45f4491cc73.png)](https://youtu.be/F529FUwWBxc)
+[![Video Demonstration](https://user-images.githubusercontent.com/701551/175928969-93675674-7117-4912-8468-f249edca7229.png)](https://youtu.be/F529FUwWBxc)
 
 ## Installation
 Grab the jar file from the [Release page](https://github.com/Lizard-Of-Oz/Searchlight/releases/).
@@ -15,7 +15,7 @@ Fabric version has a dependency: [Fabric API](https://www.curseforge.com/minecra
 ## Searchlight
 This mod adds Searchlight - a special block that doesn't emit light on its own, but casts an invisible Light Source Block in the direction of choosing.
 
-![Searchlights](https://user-images.githubusercontent.com/701551/122744905-ac338000-d2b2-11eb-9b3e-fe84d65922d7.png)
+![Searchlights](https://user-images.githubusercontent.com/701551/175929070-85e9697a-c601-463d-85c9-66b20b617c3f.png)
 
 When a player right-clicks a Searchlight block, it rotates in the direction of the player, moving a Light Source block. 
 
@@ -23,18 +23,18 @@ A Searchlight can be turned off by providing a redstone signal.
 
 The purpose of this block is to light up areas where having a visible light source would be an aesthetic detriment, but do it in a way that would fit Mojang's vision of Vanilla Survival Minecraft.
 
-![Searchlight](https://user-images.githubusercontent.com/701551/122747855-bc009380-d2b5-11eb-9254-e45831b856af.png)
+![Searchlight](https://user-images.githubusercontent.com/701551/175929127-2375417a-6b80-488d-bc0d-9fa2f7f79532.png)
 
 Holding a Searchlight will display a beam that points from a Searchlight to its Light Source and displays the Light Source's hitbox.
 
 (Forge doesn't display a beam unless a Searchlight is in frame)
 
-![Beam](https://user-images.githubusercontent.com/701551/122748245-2c0f1980-d2b6-11eb-927f-501392e17f5a.png)
+![Beam](https://user-images.githubusercontent.com/701551/175929214-3e6ee714-5469-45b9-b6cf-5c5bc289f7d4.png)
 
 ## Wall Lights
 This mod also adds a set of Wall Lights: Iron, Copper, Prismarine and 16 Colored variants (matching terracotta's color palette).
 
-![4](https://user-images.githubusercontent.com/701551/122748901-e868df80-d2b6-11eb-83d1-fe943735a641.png)
+![4](https://user-images.githubusercontent.com/701551/175929275-acd1dfa1-27da-4025-b1a3-185f0a02c1b6.png)
 
 When placed on a wall, its height is adjusted to the eye level specifically to hide the glowing part.  
 
@@ -42,7 +42,7 @@ To follow Mojang's vision of Vanilla, wood and stone variants of Wall Lights are
 
 ## Recipes
 
-![Searchlight Recipe](https://user-images.githubusercontent.com/701551/122753504-9034dc00-d2bc-11eb-8e51-15d2c68ee507.png) ![Wall Light Recipes](https://user-images.githubusercontent.com/701551/122753512-91fe9f80-d2bc-11eb-8ebc-11dd4afb8c8e.gif) ![Colored Wall Light Recipes](https://user-images.githubusercontent.com/701551/122753518-932fcc80-d2bc-11eb-878f-0eab985922c5.gif)
+![Searchlight Recipe](https://user-images.githubusercontent.com/701551/175929378-df3beb85-ed58-427b-80e5-a0f797c4f9c3.png) ![Wall Light Recipes](https://user-images.githubusercontent.com/701551/175929439-de3dfe20-630d-4681-8de8-65393c2e79ae.gif) ![Colored Wall Light Recipes](https://user-images.githubusercontent.com/701551/175929481-1f6237ab-5b67-4a45-9fc1-34369b4c72cb.gif)
 
 ## Technical details
 A searchlight tries to face the player when it gets placed. If a raycast in the player's direction yields no result, if won't create a Light Source. If you right click a Searchlight and a raycast yields no result, it won't move a Light Source.
@@ -75,7 +75,7 @@ repositories {
 
 dependencies {
   ...
-  modCompileOnly 'com.github.Lizard-Of-Oz.Searchlight:searchlight-1.18-2-fabric:1.18-2-SNAPSHOT'
+  modCompileOnly 'com.github.Lizard-Of-Oz.Searchlight:searchlight-1.19-fabric:1.19-SNAPSHOT'
 }
 ```
 
@@ -88,7 +88,7 @@ repositories {
 
 dependencies {
   ...
-  compileOnly 'com.github.Lizard-Of-Oz.Searchlight:searchlight-1.18-2-forge:1.18-2-SNAPSHOT'
+  compileOnly 'com.github.Lizard-Of-Oz.Searchlight:searchlight-1.19-forge:1.19-SNAPSHOT'
   //If you're using Architectury, you might need to use modCompileOnly instead of compileOnly
 }
 ```

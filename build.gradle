@@ -1,6 +1,6 @@
 plugins {
-    id "architectury-plugin" version "3.4.126"
-    id "dev.architectury.loom" version "0.10.0.205" apply false
+    id "architectury-plugin" version "3.4.135"
+    id "dev.architectury.loom" version "0.12.0.282" apply false
 }
 
 architectury {
@@ -15,6 +15,7 @@ def version_replaces = [
         "fabric_loader_version": rootProject.fabric_loader_version,
         "minecraft_version": rootProject.minecraft_version,
         "forge_version": rootProject.forge_version,
+        "base_mc_version": rootProject.base_mc_version,
         "github": rootProject.github
 ]
 
