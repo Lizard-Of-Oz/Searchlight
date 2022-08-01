@@ -60,35 +60,29 @@ Raycast works within the chunks loaded by the server, but manipulating a Searchl
 Light Source that somehow happened to have no associated Searchlight will not be automatically deleted, but won't get restated if replaced manually.
 
 ## Use in modpacks and with other mods
-Feel free to use this mod in a modpack.
+You can include this mod in a modpack or as a dependency for your own mod.
 
-For more Vanilla-esque improvements for vanilla problems, consider [Inventorio](https://github.com/Lizard-Of-Oz/Inventorio).
+I just ask you to respect my work and include it in a way that would count as a download of my mod by CurseForge and its Reward Program.
 
-If you want to use this mode as a dependency, I recommend using JitPack. Please note that me using Architectury plugin causes the JitPack gradle setup to be different that normal:
+* For Modpacks, CurseForge by default links a mod in the modpack manifest when you add it. Use _that_ instead of embedding the mod's jar into the modpack.
+* For Mods, don't embed the mod's jar inside your mod, but mark it as a dependency.
 
-Fabric:
+If you want to use this mode as a dependency, I recommend using [CurseMaven](https://www.cursemaven.com/).
+
+Be advised that you need to manually keep track of the latest version available.
+
 ```
 repositories {
-  ...
-  maven { url 'https://jitpack.io' }
+  maven {
+    url "https://cursemaven.com"
+    content {
+      includeGroup "curse.maven"
+    }
+  }
 }
 
 dependencies {
-  ...
-  modCompileOnly 'com.github.Lizard-Of-Oz.Searchlight:searchlight-1.19-fabric:1.19-SNAPSHOT'
-}
-```
-
-Forge:
-```
-repositories {
-  ...
-  maven { url 'https://jitpack.io' }
-}
-
-dependencies {
-  ...
-  compileOnly 'com.github.Lizard-Of-Oz.Searchlight:searchlight-1.19-forge:1.19-SNAPSHOT'
-  //If you're using Architectury, you might need to use modCompileOnly instead of compileOnly
+  modCompileOnly "curse.maven:drg_flares-496793:3850037" //Fabric
+  modCompileOnly "curse.maven:drg_flares-497127:3850038" //Forge
 }
 ```
