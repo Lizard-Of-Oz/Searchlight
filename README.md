@@ -3,6 +3,12 @@
 ## Showcase Video
 [![Video Demonstration](https://user-images.githubusercontent.com/701551/175928969-93675674-7117-4912-8468-f249edca7229.png)](https://youtu.be/F529FUwWBxc)
 
+If you want to support the development of mods like this, you can do it [here](https://boosty.to/lizardofoz).
+
+[![Support me](https://static.boosty.to/assets/images/boostyLogo.WbAVE.svg)](https://boosty.to/lizardofoz)
+
+Every dollar (or, in this case, ruble) counts and allows me to spend more time making various projects for your enjoyment.
+
 ## Installation
 Grab the jar file from the [Release page](https://github.com/Lizard-Of-Oz/Searchlight/releases/).
 
