@@ -4,9 +4,10 @@ import com.google.common.collect.ImmutableMap;
 import me.lizardofoz.searchlight.block.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -18,10 +19,11 @@ import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,9 +32,10 @@ public final class SearchlightModFabric extends SearchlightMod implements ModIni
     @Override
     public void onInitialize()
     {
-        creativeItemGroup = FabricItemGroupBuilder.build(
-                new Identifier("searchlight", "searchlight"),
-                () -> new ItemStack(searchlightBlock));
+        creativeItemGroup = FabricItemGroup
+                .builder(new Identifier("searchlight", "searchlight"))
+                .icon(() -> new ItemStack(searchlightBlock))
+                .build();
 
         registerSearchlightBlock();
         registerSearchlightLightSourceBlock();
@@ -47,12 +50,13 @@ public final class SearchlightModFabric extends SearchlightMod implements ModIni
                         .requiresTool()
                         .strength(4)
                         .nonOpaque());
-        searchlightItem = new BlockItem(searchlightBlock, new FabricItemSettings().group(creativeItemGroup));
+        searchlightItem = new BlockItem(searchlightBlock, new FabricItemSettings());
         searchlightBlockEntityType = FabricBlockEntityTypeBuilder.create(SearchlightBlockEntity::new, searchlightBlock).build(null);
 
-        Registry.register(Registry.BLOCK, new Identifier("searchlight", "searchlight"), searchlightBlock);
-        Registry.register(Registry.ITEM, new Identifier("searchlight", "searchlight"), searchlightItem);
-        Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier("searchlight", "searchlight_entity"), searchlightBlockEntityType);
+        ItemGroupEvents.modifyEntriesEvent(creativeItemGroup).register(content -> content.add(searchlightItem));
+        Registry.register(Registries.BLOCK, new Identifier("searchlight", "searchlight"), searchlightBlock);
+        Registry.register(Registries.ITEM, new Identifier("searchlight", "searchlight"), searchlightItem);
+        Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier("searchlight", "searchlight_entity"), searchlightBlockEntityType);
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT)
             BlockEntityRendererRegistry.register(searchlightBlockEntityType, SearchlightBlockRenderer::new);
     }
@@ -73,8 +77,8 @@ public final class SearchlightModFabric extends SearchlightMod implements ModIni
                         .luminance((state) -> 15));
         lightSourceBlockEntityType = FabricBlockEntityTypeBuilder.create(SearchlightLightSourceBlockEntity::new, lightSourceBlock).build(null);
 
-        Registry.register(Registry.BLOCK, new Identifier("searchlight", "searchlight_lightsource"), lightSourceBlock);
-        Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier("searchlight", "searchlight_lightsource_entity"), lightSourceBlockEntityType);
+        Registry.register(Registries.BLOCK, new Identifier("searchlight", "searchlight_lightsource"), lightSourceBlock);
+        Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier("searchlight", "searchlight_lightsource_entity"), lightSourceBlockEntityType);
     }
 
     private void registerWallLightBlocks()
@@ -97,10 +101,11 @@ public final class SearchlightModFabric extends SearchlightMod implements ModIni
                         .sounds(BlockSoundGroup.STONE)
                         .nonOpaque()
                         .noCollision());
-        Item item = new BlockItem(block, new FabricItemSettings().group(creativeItemGroup));
+        Item item = new BlockItem(block, new FabricItemSettings());
 
-        Registry.register(Registry.BLOCK, new Identifier("searchlight", "wall_light_" + postfix), block);
-        Registry.register(Registry.ITEM, new Identifier("searchlight", "wall_light_" + postfix), item);
+        ItemGroupEvents.modifyEntriesEvent(creativeItemGroup).register(content -> content.add(item));
+        Registry.register(Registries.BLOCK, new Identifier("searchlight", "wall_light_" + postfix), block);
+        Registry.register(Registries.ITEM, new Identifier("searchlight", "wall_light_" + postfix), item);
         wallLightMap.put(block, item);
     }
 }

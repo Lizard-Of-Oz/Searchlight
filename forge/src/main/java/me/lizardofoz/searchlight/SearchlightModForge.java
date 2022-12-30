@@ -8,7 +8,6 @@ import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.DyeColor;
@@ -16,6 +15,7 @@ import net.minecraft.util.Identifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -27,20 +27,11 @@ import java.util.HashMap;
 @Mod("searchlight")
 public final class SearchlightModForge extends SearchlightMod
 {
-    private HashMap<String, Object> wallLightTypes = new HashMap<>();
+    private final HashMap<String, Object> wallLightTypes = new HashMap<>();
 
     public SearchlightModForge()
     {
         FMLJavaModLoadingContext.get().getModEventBus().register(this);
-
-        creativeItemGroup = new ItemGroup("searchlight")
-        {
-            @Override
-            public ItemStack createIcon()
-            {
-                return new ItemStack(searchlightBlock);
-            }
-        };
 
         wallLightTypes.put("iron", new Object());
         wallLightTypes.put("copper", new Object());
@@ -103,14 +94,32 @@ public final class SearchlightModForge extends SearchlightMod
         });
 
         event.register(ForgeRegistries.Keys.ITEMS, helper -> {
-            searchlightItem = new BlockItem(searchlightBlock, new Item.Settings().group(creativeItemGroup));
+            searchlightItem = new BlockItem(searchlightBlock, new Item.Settings());
             helper.register(new Identifier("searchlight", "searchlight"), searchlightItem);
 
             wallLightTypes.forEach((postfix, block) -> {
-                Item item = new BlockItem((Block) block, new Item.Settings().group(creativeItemGroup));
+                Item item = new BlockItem((Block) block, new Item.Settings());
                 helper.register(new Identifier("searchlight", "wall_light_" + postfix), item);
             });
         });
+    }
+
+    @SubscribeEvent
+    public void registerCreativeTab(CreativeModeTabEvent.Register event)
+    {
+        creativeItemGroup = event.registerCreativeModeTab(
+                new Identifier("searchlight", "searchlight"),
+                builder -> builder.icon(() -> new ItemStack(searchlightItem)));
+    }
+
+    @SubscribeEvent
+    public void registerCreativeTabItems(CreativeModeTabEvent.BuildContents event)
+    {
+        if (creativeItemGroup.equals(event.getTab()))
+        {
+            event.add(searchlightItem);
+            wallLightTypes.forEach((postfix, block) -> event.add((Block)block));
+        }
     }
 
     @SubscribeEvent

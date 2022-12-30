@@ -21,7 +21,7 @@
     ]
   },
   "depends": {
-    "minecraft": "1.19.x",
+    "minecraft": ">=${base_mc_version}",
     "fabricloader": ">=${fabric_loader_version}",
     "fabric": "*"
   }

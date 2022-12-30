@@ -25,42 +25,13 @@
     ]
   },
   "criteria": {
-    "has_iron_nugget": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "minecraft:iron_nugget"
-            ]
-          }
-        ]
-      }
-    },
-    "has_iron_ingot": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "minecraft:iron_ingot"
-            ]
-          }
-        ]
-      }
-    },
-    "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
-      "conditions": {
-        "recipe": "searchlight:searchlight"
-      }
+    "exists": {
+      "trigger": "minecraft:tick"
     }
   },
   "requirements": [
     [
-      "has_iron_nugget",
-      "has_iron_ingot",
-      "has_the_recipe"
+      "exists"
     ]
   ]
 }

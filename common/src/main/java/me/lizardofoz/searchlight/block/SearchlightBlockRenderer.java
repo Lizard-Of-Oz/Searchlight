@@ -14,8 +14,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
 
 @Environment(EnvType.CLIENT)
 public class SearchlightBlockRenderer implements BlockEntityRenderer<SearchlightBlockEntity>
@@ -27,12 +27,12 @@ public class SearchlightBlockRenderer implements BlockEntityRenderer<Searchlight
     protected static final int NO_LIGHT = LightmapTextureManager.pack(0, 0);
     protected static final int MAX_OVERLAY = OverlayTexture.packUv(15, 15);
 
-    protected static final Vec3f CEILING_PIVOT = new Vec3f(8, 10, 8);
-    protected static final Vec3f FLOOR_PIVOT = new Vec3f(8, 6, 8);
-    protected static final Vec3f NORTH_PIVOT = new Vec3f(8, 8, 12);
-    protected static final Vec3f SOUTH_PIVOT = new Vec3f(8, 8, 4);
-    protected static final Vec3f WEST_PIVOT = new Vec3f(12, 8, 8);
-    protected static final Vec3f EAST_PIVOT = new Vec3f(4, 8, 8);
+    protected static final Vec3d CEILING_PIVOT = new Vec3d(8, 10, 8);
+    protected static final Vec3d FLOOR_PIVOT = new Vec3d(8, 6, 8);
+    protected static final Vec3d NORTH_PIVOT = new Vec3d(8, 8, 12);
+    protected static final Vec3d SOUTH_PIVOT = new Vec3d(8, 8, 4);
+    protected static final Vec3d WEST_PIVOT = new Vec3d(12, 8, 8);
+    protected static final Vec3d EAST_PIVOT = new Vec3d(4, 8, 8);
 
     protected final ModelPart onWallBody;
     protected final ModelPart onWallLightFace;
@@ -77,7 +77,7 @@ public class SearchlightBlockRenderer implements BlockEntityRenderer<Searchlight
     @Override
     public void render(SearchlightBlockEntity blockEntity, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, int overlay)
     {
-        Vec3f pivot = getModelPivot(blockEntity);
+        Vec3d pivot = getModelPivot(blockEntity);
         Vec3d direction = blockEntity.getBeamDirection();
         VertexConsumer vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntityCutoutNoCull(SEARCHLIGHT_BODY_TEXTURE, true));
 
@@ -85,14 +85,14 @@ public class SearchlightBlockRenderer implements BlockEntityRenderer<Searchlight
         ModelPart body = isOnWall ? onWallBody : onFloorBody;
         ModelPart lightFace = isOnWall ? onWallLightFace : onFloorLightFace;
 
-        body.setPivot(pivot.getX(), pivot.getY(), pivot.getZ());
+        body.setPivot((float) pivot.getX(), (float) pivot.getY(), (float) pivot.getZ());
         body.yaw = (float) MathHelper.atan2(direction.x, direction.z);
         body.pitch = (float) (MathHelper.atan2(Math.sqrt(direction.z * direction.z + direction.x * direction.x), direction.y) + Math.PI);
         body.render(matrixStack, vertexConsumer, light, overlay);
 
         boolean shouldRenderLight = blockEntity.getLightSourcePos() != null && !blockEntity.getCachedState().get(SearchlightBlock.POWERED);
         //This portion renders the luminous front surface of the searchlight
-        lightFace.setPivot(pivot.getX(), pivot.getY(), pivot.getZ());
+        lightFace.setPivot((float) pivot.getX(), (float) pivot.getY(), (float) pivot.getZ());
         lightFace.yaw = body.yaw;
         lightFace.pitch = body.pitch;
         lightFace.render(matrixStack, vertexConsumer, shouldRenderLight ? MAX_LIGHT : NO_LIGHT, MAX_OVERLAY);
@@ -104,13 +104,13 @@ public class SearchlightBlockRenderer implements BlockEntityRenderer<Searchlight
         }
     }
 
-    protected void drawBeam(Vec3f pivot, float yaw, float pitch, int distance, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider)
+    protected void drawBeam(Vec3d pivot, float yaw, float pitch, int distance, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider)
     {
         matrixStack.push();
 
         matrixStack.translate(pivot.getX() / 16, pivot.getY() / 16, pivot.getZ() / 16);
-        matrixStack.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(yaw));
-        matrixStack.multiply(Vec3f.POSITIVE_X.getRadialQuaternion((float) (Math.PI + pitch)));
+        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotation(yaw));
+        matrixStack.multiply(RotationAxis.POSITIVE_X.rotation((float) (Math.PI + pitch)));
         matrixStack.translate(-0.5, 0.35, -0.5);
 
         BeaconBlockEntityRenderer.renderBeam(matrixStack, vertexConsumerProvider, SEARCHLIGHT_BEAM,
@@ -119,7 +119,7 @@ public class SearchlightBlockRenderer implements BlockEntityRenderer<Searchlight
         matrixStack.pop();
     }
 
-    protected Vec3f getModelPivot(SearchlightBlockEntity blockEntity)
+    protected Vec3d getModelPivot(SearchlightBlockEntity blockEntity)
     {
         Direction direction = SearchlightUtil.getDirection(blockEntity.getCachedState());
         if (direction == Direction.UP)
