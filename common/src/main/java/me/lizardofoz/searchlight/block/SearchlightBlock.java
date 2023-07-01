@@ -4,7 +4,6 @@ import me.lizardofoz.searchlight.util.SearchlightUtil;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.WallMountLocation;
-import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -58,11 +57,6 @@ public class SearchlightBlock extends WallMountedBlock implements BlockEntityPro
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder)
     {
         builder.add(FACING, FACE, POWERED);
-    }
-
-    @Override
-    public PistonBehavior getPistonBehavior(BlockState state) {
-        return PistonBehavior.DESTROY;
     }
 
     @Override

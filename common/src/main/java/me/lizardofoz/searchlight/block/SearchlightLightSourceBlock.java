@@ -4,7 +4,6 @@ import me.lizardofoz.searchlight.SearchlightMod;
 import me.lizardofoz.searchlight.util.SearchlightUtil;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -47,11 +46,6 @@ public class SearchlightLightSourceBlock extends Block implements BlockEntityPro
     public float getAmbientOcclusionLightLevel(BlockState state, BlockView world, BlockPos pos)
     {
         return 1;
-    }
-
-    @Override
-    public PistonBehavior getPistonBehavior(BlockState state) {
-        return PistonBehavior.DESTROY;
     }
 
     @Override

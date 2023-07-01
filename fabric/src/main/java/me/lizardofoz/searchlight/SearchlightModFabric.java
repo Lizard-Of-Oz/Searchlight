@@ -9,19 +9,18 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
-import net.minecraft.block.Material;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import java.util.HashMap;
@@ -32,10 +31,11 @@ public final class SearchlightModFabric extends SearchlightMod implements ModIni
     @Override
     public void onInitialize()
     {
-        creativeItemGroup = FabricItemGroup
-                .builder(new Identifier("searchlight", "searchlight"))
-                .icon(() -> new ItemStack(searchlightBlock))
-                .build();
+        Registry.register(Registries.ITEM_GROUP, creativeItemGroup,
+                FabricItemGroup.builder()
+                        .icon(() -> new ItemStack(searchlightBlock))
+                        .displayName(Text.translatable("itemGroup.searchlight"))
+                        .build());
 
         registerSearchlightBlock();
         registerSearchlightLightSourceBlock();
@@ -45,7 +45,9 @@ public final class SearchlightModFabric extends SearchlightMod implements ModIni
     private void registerSearchlightBlock()
     {
         searchlightBlock = new SearchlightBlock(
-                FabricBlockSettings.of(Material.METAL, MapColor.CLEAR)
+                FabricBlockSettings.create()
+                        .mapColor(MapColor.CLEAR)
+                        .pistonBehavior(PistonBehavior.DESTROY)
                         .sounds(BlockSoundGroup.METAL)
                         .requiresTool()
                         .strength(4)
@@ -64,16 +66,15 @@ public final class SearchlightModFabric extends SearchlightMod implements ModIni
     private void registerSearchlightLightSourceBlock()
     {
         lightSourceBlock = new SearchlightLightSourceBlock(
-                AbstractBlock.Settings.of(
-                        new FabricMaterialBuilder(MapColor.CLEAR)
-                                .replaceable()
-                                .lightPassesThrough()
-                                .notSolid()
-                                .build())
+                FabricBlockSettings.create()
+                        .mapColor(MapColor.CLEAR)
+                        .replaceable()
+                        .notSolid()
                         .sounds(BlockSoundGroup.WOOD)
                         .strength(3600000.8F)
                         .dropsNothing()
                         .nonOpaque()
+                        .pistonBehavior(PistonBehavior.DESTROY)
                         .luminance((state) -> 15));
         lightSourceBlockEntityType = FabricBlockEntityTypeBuilder.create(SearchlightLightSourceBlockEntity::new, lightSourceBlock).build(null);
 
@@ -95,7 +96,9 @@ public final class SearchlightModFabric extends SearchlightMod implements ModIni
     private void registerWallLight(String postfix, Map<Block,Item> wallLightMap)
     {
         Block block = new WallLightBlock(
-                AbstractBlock.Settings.of(Material.DECORATION)
+                FabricBlockSettings.create()
+                        .notSolid()
+                        .pistonBehavior(PistonBehavior.DESTROY)
                         .strength(0.5F)
                         .luminance((state) -> 14)
                         .sounds(BlockSoundGroup.STONE)

@@ -4,18 +4,22 @@ import me.lizardofoz.searchlight.block.*;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
-import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -43,24 +47,32 @@ public final class SearchlightModForge extends SearchlightMod
     @SubscribeEvent
     public void forgePleaseStopChangingYourAPI(RegisterEvent event)
     {
+        Registry.register(Registries.ITEM_GROUP, creativeItemGroup,
+                ItemGroup.builder()
+                        .icon(() -> new ItemStack(searchlightBlock))
+                        .displayName(Text.translatable("itemGroup.searchlight"))
+                        .build());
+
         event.register(ForgeRegistries.Keys.BLOCKS, helper -> {
             searchlightBlock = new SearchlightBlock(
-                    AbstractBlock.Settings.of(Material.METAL, MapColor.CLEAR)
+                    AbstractBlock.Settings.create()
+                            .mapColor(MapColor.CLEAR)
+                            .pistonBehavior(PistonBehavior.DESTROY)
                             .sounds(BlockSoundGroup.METAL)
-                            .strength(4)
                             .requiresTool()
+                            .strength(4)
                             .nonOpaque());
 
             lightSourceBlock = new SearchlightLightSourceBlock(
-                    AbstractBlock.Settings.of(
-                                    new Material.Builder(MapColor.CLEAR)
-                                            .replaceable()
-                                            .notSolid()
-                                            .build())
+                    AbstractBlock.Settings.create()
+                            .mapColor(MapColor.CLEAR)
+                            .replaceable()
+                            .notSolid()
                             .sounds(BlockSoundGroup.WOOD)
                             .strength(3600000.8F)
                             .dropsNothing()
                             .nonOpaque()
+                            .pistonBehavior(PistonBehavior.DESTROY)
                             .luminance((state) -> 15));
 
             helper.register(new Identifier("searchlight", "searchlight"), searchlightBlock);
@@ -69,14 +81,16 @@ public final class SearchlightModForge extends SearchlightMod
             for (String postfix : new ArrayList<>(wallLightTypes.keySet()))
             {
                 Block block = new WallLightBlock(
-                        AbstractBlock.Settings.of(Material.DECORATION)
+                        AbstractBlock.Settings.create()
+                                .notSolid()
+                                .pistonBehavior(PistonBehavior.DESTROY)
                                 .strength(0.5F)
                                 .luminance((state) -> 14)
                                 .sounds(BlockSoundGroup.STONE)
                                 .nonOpaque()
                                 .noCollision());
                 wallLightTypes.put(postfix, block);
-                helper.register(new Identifier("searchlight", "wall_light_" + postfix), (Block) block);
+                helper.register(new Identifier("searchlight", "wall_light_" + postfix), block);
             }
         });
 
@@ -105,17 +119,9 @@ public final class SearchlightModForge extends SearchlightMod
     }
 
     @SubscribeEvent
-    public void registerCreativeTab(CreativeModeTabEvent.Register event)
+    public void registerCreativeTabItems(BuildCreativeModeTabContentsEvent event)
     {
-        creativeItemGroup = event.registerCreativeModeTab(
-                new Identifier("searchlight", "searchlight"),
-                builder -> builder.icon(() -> new ItemStack(searchlightItem)));
-    }
-
-    @SubscribeEvent
-    public void registerCreativeTabItems(CreativeModeTabEvent.BuildContents event)
-    {
-        if (creativeItemGroup.equals(event.getTab()))
+        if (creativeItemGroup.equals(event.getTabKey()))
         {
             event.add(searchlightItem);
             wallLightTypes.forEach((postfix, block) -> event.add((Block)block));
